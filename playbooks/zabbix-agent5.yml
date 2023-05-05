@@ -1,0 +1,42 @@
+---
+
+- hosts: agent
+  become: yes
+  tasks:
+#    - name : Update all packages
+#      apt: name="*" state=latest update_cache=true force_apt_get=true
+#    - name: Install zabbix-agent from .deb file
+#      apt: deb=https://repo.zabbix.com/zabbix/6.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.2-4%2Bubuntu20.04_all.deb state=present update_cache=true
+
+#    - name: install zabbix-agent
+#      apt:
+#        deb: https://repo.zabbix.com/zabbix/6.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.2-4%2Bubuntu20.04_all.deb
+#        state: present
+#      become: true
+#      register: apt_output
+
+    - name: install zabbix-agent
+      apt:
+        name: zabbix-agent
+        state: latest
+          
+
+    - name: config zabbix-agent
+      template:
+        src: /etc/ansible/templates/zabbix_agentd.conf.t
+        dest: /etc/zabbix/zabbix_agentd.conf
+        owner: root
+        group: root
+        mode: 0644
+#      notify: restart zabbix-agent
+
+    - name: start zabbix-agent and enable
+      service:
+        name: zabbix-agent
+        state: started
+        enabled: yes
+  handlers:
+    - name: restart zabbix-agent
+      service:
+        name: zabbix-agent
+        state: restarted
