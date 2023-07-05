@@ -1,0 +1,37 @@
+---
+
+- hosts: web
+  become: yes
+  tasks:
+#    - name : Update all packages
+#      apt: name="*" state=latest update_cache=true force_apt_get=true
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: config nginx-proxy
+      template:
+        src: /etc/ansible/templates/nginx_proxy.conf.j2
+        dest: /etc/nginx/sites-aviable/default
+#        owner: root
+#        group: root
+#        mode: 0644
+#      notify: restart zabbix-agent
+
+#    - name: start nginx and enable
+#      service:
+#        name: nginx
+#        state: started
+#        enabled: yes
+#  handlers:
+#    - name: restart nginx
+#      service:
+#        name: nginx
+#        state: restarted
+    - name: start and enable service nginx
+      ansible.builtin.service:
+        name: filebeat
+        state: started
+        enabled: yes
+
